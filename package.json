@@ -1,0 +1,37 @@
+{
+  "name": "jzz-midi-ws",
+  "version": "0.0.0",
+  "description": "coming soon...",
+  "main": "javascript/JZZ.midi.WS.js",
+  "scripts": {
+    "test": "nyc mocha",
+    "lint": "eslint javascript test",
+    "coverage": "nyc report --reporter=lcov"
+  },
+  "keywords": [
+    "midi",
+    "ws",
+    "websocket"
+  ],
+  "author": "jazz-soft (https://jazz-soft.net/)",
+  "dependencies": {
+    "jzz": "^1.8.8"
+  },
+  "devDependencies": {
+    "eslint": "^9.20.0",
+    "grunt": "^1.6.1",
+    "grunt-contrib-jshint": "^3.2.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "jzz-gui-player": "^1.7.7",
+    "jzz-synth-tiny": "^1.4.2",
+    "mocha": "^11.1.0",
+    "nyc": "^17.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jazz-soft/JZZ-midi-WS.git"
+  },
+  "homepage": "https://github.com/jazz-soft/JZZ-midi-WS",
+  "bugs": "https://github.com/jazz-soft/JZZ-midi-WS/issues",
+  "license": "MIT"
+}
