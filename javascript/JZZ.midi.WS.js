@@ -13,10 +13,10 @@
 })(this, function(JZZ) {
 
   /* istanbul ignore next */
-  if (JZZ.connectWS) return;
+  if (JZZ.WS) return;
   var _WS = typeof WebSocket == 'undefined' ? require('ws') : WebSocket;
 
-  function connectWS(url) {
+  function connect(url) {
     var ws = new _WS(url);
     //console.log('WS:', ws);
 
@@ -55,11 +55,13 @@
     if (this.ins[name]) return;
     this.ins[name] = widget;
     this.inputs.push(name);
+    _send(this, _info(this));
   }
   Server.prototype.addMidiOut = function(name, widget) {
     if (this.outs[name]) return;
     this.outs[name] = widget;
     this.outputs.push(name);
+    _send(this, _info(this));
   }
   function _add(a, x) {
     for (var n = 0; n < a.length; n++) if (a[n] == x) return a;
@@ -74,7 +76,7 @@
   function _info(self) {
     return JSON.stringify({ info: { inputs: self.inputs, outputs: self.outputs }});
   }
+  function _send(self, msg) { for (var n = 0; n < self.cli.length; n++) self.cli[n].send(msg); }
 
-  JZZ.connectWS = connectWS;
-  JZZ.WSServer = Server;
+  JZZ.WS = { connect: connect, Server: Server };
 });

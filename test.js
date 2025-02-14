@@ -1,4 +1,4 @@
 var JZZ = require('jzz');
 require('.')(JZZ);
 
-JZZ.connectWS('ws://localhost:8888');
+JZZ.WS.connect('ws://localhost:8888');
