@@ -1,8 +1,34 @@
 # JZZ-midi-WS
 coming soon...
 
+## Usage
+##### Plain HTML
+```html
+<script src="JZZ.js"></script>
+<script src="JZZ.midi.WS.js"></script>
+//...
+```
+##### CDN (jsdelivr)
+```html
+<script src="https://cdn.jsdelivr.net/npm/jzz"></script>
+<script src="https://cdn.jsdelivr.net/npm/jzz-midi-ws"></script>
+//...
+```
+##### CDN (unpkg)
+```html
+<script src="https://unpkg.com/jzz"></script>
+<script src="https://unpkg.com/jzz-midi-ws"></script>
+//...
+```
+##### CommonJS
+```js
+var JZZ = require('jzz');
+require('jzz-midi-ws')(JZZ);
+//...
+```
+
 ## Server
-(Node.js only)
+##### (Node.js only)
 ```js
 const ws = require('ws');
 const JZZ = require('jzz');
