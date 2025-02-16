@@ -1,5 +1,6 @@
 # JZZ-midi-WS
-MIDI via WebSockets
+## MIDI via WebSockets for browser and Node.js
+and, YES, it can be seen from Web MIDI API!
 
 [![npm](https://img.shields.io/npm/v/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
 
@@ -28,6 +29,17 @@ var JZZ = require('jzz');
 require('jzz-midi-ws')(JZZ);
 //...
 ```
+
+## Client
+##### (Browser or Node.js)
+```js
+JZZ.WS.connect('ws://localhost:8888'); // not necessarily local :)
+// ... 
+var port = JZZ().openMidiOut('ws://localhost:8888 - Microsoft GS Wavetable Synth');
+// ... 
+port.noteOn(0, 'C5', 127);
+```
+See another example at https://github.com/jazz-soft/JZZ-midi-WS/blob/main/test.html ...
 
 ## Server
 ##### (Node.js only)
