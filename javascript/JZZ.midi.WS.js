@@ -18,25 +18,41 @@
 
   function connect(url) {
     var ws = new _WS(url);
-    //console.log('WS:', ws);
-
+    var ins = {};
+    var outs = {};
+    var inputs = [];
+    var outputs = [];
     ws.onerror = console.error;
-    ws.onopen = function open() {
-      //ws.send('hello from client!');
+    ws.onclose = function() {
+      //console.log('connection closed:', url);
     };
-    ws.onclose = function open() {
-      console.log('connection closed:', url);
-    };
-    ws.onmessage = function message(evt) {
-      //console.log('received: %s', evt.data);
+    ws.onmessage = function(evt) {
       try {
         var x = JSON.parse(evt.data);
-        if (x.info) {}
+        if (x.info) {
+          var i, d, w;
+          d = _diff(x.info.inputs, inputs);
+          for (i = 0; i < d[0].length; i++) {
+            w = new JZZ.Widget();
+            ins[d[0][i]] = w;
+            JZZ.addMidiIn(url + ' - ' + d[0][i], w);
+            inputs = x.info.intputs;
+          }
+          d = _diff(x.info.outputs, outputs);
+          for (i = 0; i < d[0].length; i++) {
+            w = new JZZ.Widget({ _receive: _onmsg(ws, d[0][i]) });
+            outs[d[0][i]] = w;
+            JZZ.addMidiOut(url + ' - ' + d[0][i], w);
+            outputs = x.info.outputs;
+          }
+        }
         else if (x.midi) {
-          console.log(x.id + ': ' + _decode(x.midi));
+          if (ins[x.id]) ins[x.id].send(_decode(x.midi));
         }
       }
-      catch(e) {/**/}
+      catch(e) {
+        console.error(e.message);
+      }
     };
   }
 
@@ -49,15 +65,13 @@
     this.outs = {};
     this.inputs = [];
     this.outputs = [];
-    wss.on('connection', function connection(ws) {
+    wss.on('connection', function(ws) {
       _add(self.cli, ws);
       ws.on('error', console.error);
-      ws.on('message', function message(data) {
-        //console.log('received: %s', data);
+      ws.on('message', function(data) {
         try {
           var x = JSON.parse(data);
-          if (x.info) {}
-          else if (x.midi) {
+          if (x.midi) {
             if (self.outs[x.id]) self.outs[x.id].send(_decode(x.midi));
           }
         }
@@ -76,13 +90,13 @@
       _send(self, JSON.stringify({ id: name, midi: _encode(msg) }));
     });
     _send(this, _info(this));
-  }
+  };
   Server.prototype.addMidiOut = function(name, widget) {
     if (this.outs[name]) return;
     this.outs[name] = widget;
     this.outputs.push(name);
     _send(this, _info(this));
-  }
+  };
   function _add(a, x) {
     for (var n = 0; n < a.length; n++) if (a[n] == x) return a;
     a.push(x);
@@ -100,14 +114,25 @@
   function _encode(m) {
     var x = { midi: m.splice(0, m.length) };
     var k = Object.keys(m);
-    for (var n = 0; n < k.length; n++) if (k[n] != 'length' && k[n] != '_from') x[k[n]] = m[k[n]]
+    for (var n = 0; n < k.length; n++) if (k[n] != 'length' && k[n] != '_from') x[k[n]] = m[k[n]];
     return x;
   }
   function _decode(x) {
     var m = new JZZ.MIDI(x.midi);
     var k = Object.keys(x);
-    for (var n = 0; n < k.length; n++) if (k[n] != 'midi') m[k[n]] = k[k[n]]
+    for (var n = 0; n < k.length; n++) if (k[n] != 'midi') m[k[n]] = k[k[n]];
     return m;
+  }
+  function _diff(a, b) {
+    var i, aa = [], bb = [];
+    for (i = 0; i < a.length; i++) if (!b.includes(a[i])) aa.push(a[i]);
+    for (i = 0; i < b.length; i++) if (!a.includes(b[i])) bb.push(b[i]);
+    return [aa, bb];
+  }
+  function _onmsg(ws, name) {
+    return function(msg) {
+      ws.send(JSON.stringify({ id: name, midi: _encode(msg) }));
+    };
   }
 
   JZZ.WS = { connect: connect, Server: Server };

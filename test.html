@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Test</title>
+<title>MIDI via WebSockets</title>
 <script src="node_modules/jzz/javascript/JZZ.js"></script>
+<script src="node_modules/jzz-gui-select/javascript/JZZ.gui.Select.js"></script>
+<script src="node_modules/jzz-input-kbd/javascript/JZZ.input.Kbd.js"></script>
 <script src="javascript/JZZ.midi.WS.js"></script>
 </head>
 <body>
-<h1>Test</h1>
+<h1>MIDI via WebSockets</h1>
+<p>
+<label for="select_midi_in">MIDI In:</label>
+<select id="select_midi_in"></select>
+<label for="select_midi_out">MIDI Out:</label>
+<select id="select_midi_out"></select>
+</p><p>
+<div id="piano"></div>
+</p>
 <script>
 JZZ.WS.connect('ws://localhost:8888');
+var midi_in = JZZ.gui.SelectMidiIn({ at: 'select_midi_in' });
+var midi_out = JZZ.gui.SelectMidiOut({ at: 'select_midi_out' });
+var piano = JZZ.input.Kbd({at: "piano"});
+midi_in.connect(piano);
+piano.connect(midi_out);
 </script>
 </body>
 </html>

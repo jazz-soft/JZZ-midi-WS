@@ -1,5 +1,7 @@
 # JZZ-midi-WS
-coming soon...
+MIDI via WebSockets
+
+[![npm](https://img.shields.io/npm/v/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
 
 ## Usage
 ##### Plain HTML
