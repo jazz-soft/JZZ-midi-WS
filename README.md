@@ -1,6 +1,6 @@
 # JZZ-midi-WS
 ## MIDI via WebSockets for browser and Node.js
-and, YES, it can be seen from Web MIDI API!
+and, YES, it's visible from the Web MIDI API!
 
 [![npm](https://img.shields.io/npm/v/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
 
