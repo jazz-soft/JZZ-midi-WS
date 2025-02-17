@@ -24,7 +24,17 @@
     var outputs = [];
     ws.onerror = console.error;
     ws.onclose = function() {
-      //console.log('connection closed:', url);
+      var i;
+      for (i = 0; i < inputs.length; i++) {
+        ins[inputs[i]].disconnect();
+        JZZ.removeMidiIn(url + ' - ' + inputs[i]);
+      }
+      for (i = 0; i < outputs.length; i++) {
+        outs[outputs[i]].disconnect();
+        JZZ.removeMidiOut(url + ' - ' + outputs[i]);
+      }
+      ins = {}; outs = {};
+      inputs = []; outputs = [];
     };
     ws.onmessage = function(evt) {
       try {
@@ -36,15 +46,25 @@
             w = new JZZ.Widget();
             ins[d[0][i]] = w;
             JZZ.addMidiIn(url + ' - ' + d[0][i], w);
-            inputs = x.info.intputs;
+          }
+          for (i = 0; i < d[1].length; i++) {
+            ins[d[1][i]].disconnect();
+            delete ins[d[1][i]];
+            JZZ.removeMidiIn(url + ' - ' + d[1][i]);
           }
           d = _diff(x.info.outputs, outputs);
           for (i = 0; i < d[0].length; i++) {
             w = new JZZ.Widget({ _receive: _onmsg(ws, d[0][i]) });
             outs[d[0][i]] = w;
             JZZ.addMidiOut(url + ' - ' + d[0][i], w);
-            outputs = x.info.outputs;
           }
+          for (i = 0; i < d[1].length; i++) {
+            outs[d[1][i]].disconnect();
+            delete outs[d[1][i]];
+            JZZ.removeMidiOut(url + ' - ' + d[1][i]);
+          }
+          inputs = x.info.inputs;
+          outputs = x.info.outputs;
         }
         else if (x.midi) {
           if (ins[x.id]) ins[x.id].send(_decode(x.midi));
@@ -96,6 +116,24 @@
     this.outs[name] = widget;
     this.outputs.push(name);
     _send(this, _info(this));
+  };
+  Server.prototype.removeMidiIn = function(name) {
+    var n = this.inputs.indexOf(name);
+    if (n != 1) {
+      this.inputs.splice(n, 1);
+      this.ins[name].disconnect();
+      delete this.ins[name];
+      _send(this, _info(this));
+    }
+  };
+  Server.prototype.removeMidiOut = function(name) {
+    var n = this.outputs.indexOf(name);
+    if (n != 1) {
+      this.outputs.splice(n, 1);
+      this.outs[name].disconnect();
+      delete this.outs[name];
+      _send(this, _info(this));
+    }
   };
   function _add(a, x) {
     for (var n = 0; n < a.length; n++) if (a[n] == x) return a;
