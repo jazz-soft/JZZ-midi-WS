@@ -18,6 +18,7 @@
 <div id="piano"></div>
 </p>
 <script>
+JZZ({engine:'none'}); // hide local ports
 JZZ.WS.connect('ws://localhost:8888');
 var midi_in = JZZ.gui.SelectMidiIn({ at: 'select_midi_in' });
 var midi_out = JZZ.gui.SelectMidiOut({ at: 'select_midi_out' });

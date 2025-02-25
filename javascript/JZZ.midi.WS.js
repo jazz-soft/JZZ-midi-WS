@@ -16,13 +16,17 @@
   if (JZZ.WS) return;
   var _WS = typeof WebSocket == 'undefined' ? require('ws') : WebSocket;
 
+  var error = false;
   function connect(url) {
     var ws = new _WS(url);
     var ins = {};
     var outs = {};
     var inputs = [];
     var outputs = [];
-    ws.onerror = console.error;
+    ws.onerror = function(e) {
+      if (!error) console.error(e);
+      error = true;
+    }
     ws.onclose = function() {
       var i;
       for (i = 0; i < inputs.length; i++) {
@@ -35,8 +39,10 @@
       }
       ins = {}; outs = {};
       inputs = []; outputs = [];
+      setTimeout(function() { connect(url); }, 1000);
     };
     ws.onmessage = function(evt) {
+      error = false;
       try {
         var x = JSON.parse(evt.data);
         if (x.info) {
