@@ -65,3 +65,4 @@ JZZ().and(function() {
 server.addMidiIn('Dummy', JZZ.Widget());
 server.addMidiOut('Debug', JZZ.Widget({ _receive: function(msg) { console.log(msg.toString()); }}));
 ```
+A more advanced example is available at https://github.com/jazz-soft/WS-MIDI-Server ...
