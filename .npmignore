@@ -2,3 +2,4 @@
 minified
 test*
 Gruntfile.js
+*.url
