@@ -179,5 +179,10 @@
     };
   }
 
-  JZZ.WS = { connect: connect, Server: Server };
+  JZZ.WS = {
+    connect: connect,
+    decode: _decode,
+    encode: _encode,
+    Server: Server
+  };
 });

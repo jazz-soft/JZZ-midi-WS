@@ -5,6 +5,7 @@
 <script src="node_modules/jzz/javascript/JZZ.js"></script>
 <script src="node_modules/jzz-gui-select/javascript/JZZ.gui.Select.js"></script>
 <script src="node_modules/jzz-input-kbd/javascript/JZZ.input.Kbd.js"></script>
+<script src="node_modules/jzz-synth-tiny/javascript/JZZ.synth.Tiny.js"></script>
 <script src="javascript/JZZ.midi.WS.js"></script>
 </head>
 <body>
@@ -18,6 +19,7 @@
 <div id="piano"></div>
 </p>
 <script>
+JZZ.synth.Tiny.register('Web Audio');
 JZZ({engine:'none'}); // hide local ports
 JZZ.WS.connect('ws://localhost:8888');
 var midi_in = JZZ.gui.SelectMidiIn({ at: 'select_midi_in' });

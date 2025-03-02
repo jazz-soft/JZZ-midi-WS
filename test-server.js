@@ -8,8 +8,8 @@ const server = new JZZ.WS.Server(new ws.Server({ port: port }));
 JZZ().and(function() {
     var p;
     var info = JZZ().info();
-    for (p of info.inputs) server.addMidiIn(p.id, JZZ().openMidiIn(p.id));
-    for (p of info.outputs) server.addMidiOut(p.id, JZZ().openMidiOut(p.id));
+    for (p of info.inputs) server.addMidiIn(p.name, JZZ().openMidiIn(p.name));
+    for (p of info.outputs) server.addMidiOut(p.name, JZZ().openMidiOut(p.name));
     server.addMidiIn('Dummy', JZZ.Widget());
     server.addMidiOut('Debug', JZZ.Widget({ _receive: function(msg) { console.log(msg.toString()); }}));
 }).or('Cannot start MIDI engine!');
