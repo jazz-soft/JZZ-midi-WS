@@ -26,7 +26,7 @@
     ws.onerror = function(e) {
       if (!error) console.error(e);
       error = true;
-    }
+    };
     ws.onclose = function() {
       var i;
       for (i = 0; i < inputs.length; i++) {
@@ -125,7 +125,7 @@
   };
   Server.prototype.removeMidiIn = function(name) {
     var n = this.inputs.indexOf(name);
-    if (n != 1) {
+    if (n != -1) {
       this.inputs.splice(n, 1);
       this.ins[name].disconnect();
       delete this.ins[name];
@@ -134,7 +134,7 @@
   };
   Server.prototype.removeMidiOut = function(name) {
     var n = this.outputs.indexOf(name);
-    if (n != 1) {
+    if (n != -1) {
       this.outputs.splice(n, 1);
       this.outs[name].disconnect();
       delete this.outs[name];
