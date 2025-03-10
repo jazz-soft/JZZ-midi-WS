@@ -3,6 +3,9 @@
 and, YES, it's visible from the Web MIDI API!
 
 [![npm](https://img.shields.io/npm/v/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
+[![npm](https://img.shields.io/npm/dt/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
+[![build](https://github.com/jazz-soft/JZZ-midi-WS/actions/workflows/build.yml/badge.svg)](https://github.com/jazz-soft/JZZ-midi-WS/actions)
+[![Coverage Status](https://coveralls.io/repos/github/jazz-soft/JZZ-midi-WS/badge.svg)](https://coveralls.io/github/jazz-soft/JZZ-midi-WS)
 
 ## Usage
 ##### Plain HTML
