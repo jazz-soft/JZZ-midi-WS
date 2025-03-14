@@ -17,7 +17,7 @@
   var _WS = typeof WebSocket == 'undefined' ? require('ws') : WebSocket;
 
   var error = false;
-  function connect(url) {
+  function Client(url) {
     var ws = new _WS(url);
     var ins = {};
     var outs = {};
@@ -180,7 +180,7 @@
   }
 
   JZZ.WS = {
-    connect: connect,
+    connect: function(url) { return new Client(url); },
     decode: _decode,
     encode: _encode,
     Server: Server
