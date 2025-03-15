@@ -98,7 +98,7 @@
       }
     };
     reconnect();
-    return self;
+    return self._thenable();
   }
 
   function Server(wss) {
