@@ -16,70 +16,89 @@
   if (JZZ.WS) return;
   var _WS = typeof WebSocket == 'undefined' ? require('ws') : WebSocket;
 
-  var error = false;
-  function Client(url) {
-    var ws = new _WS(url);
+  function connect(url, timeout) {
+    var self = new JZZ.lib.R();
     var ins = {};
     var outs = {};
     var inputs = [];
     var outputs = [];
-    ws.onerror = function(e) {
-      if (!error) console.error(e);
-      error = true;
-    };
-    ws.onclose = function() {
-      var i;
-      for (i = 0; i < inputs.length; i++) {
-        ins[inputs[i]].disconnect();
-        JZZ.removeMidiIn(url + ' - ' + inputs[i]);
-      }
-      for (i = 0; i < outputs.length; i++) {
-        outs[outputs[i]].disconnect();
-        JZZ.removeMidiOut(url + ' - ' + outputs[i]);
-      }
-      ins = {}; outs = {};
-      inputs = []; outputs = [];
-      setTimeout(function() { connect(url); }, 1000);
-    };
-    ws.onmessage = function(evt) {
-      error = false;
+    var start = true;
+    var dead = false;
+    var error = false;
+    timeout = timeout == parseInt(timeout) && timeout > 0 ? timeout : 5000;
+    setTimeout(function() { if (start) { self._crash(); dead = true; } }, timeout);
+    var reconnect = function() {
       try {
-        var x = JSON.parse(evt.data);
-        if (x.info) {
-          var i, d, w;
-          d = _diff(x.info.inputs, inputs);
-          for (i = 0; i < d[0].length; i++) {
-            w = new JZZ.Widget();
-            ins[d[0][i]] = w;
-            JZZ.addMidiIn(url + ' - ' + d[0][i], w);
+        var ws = new _WS(url);
+        ws.onerror = function(e) {
+          if (!error) console.error(e);
+          error = true;
+        };
+        ws.onclose = function() {
+          var i;
+          for (i = 0; i < inputs.length; i++) {
+            ins[inputs[i]].disconnect();
+            JZZ.removeMidiIn(url + ' - ' + inputs[i]);
           }
-          for (i = 0; i < d[1].length; i++) {
-            ins[d[1][i]].disconnect();
-            delete ins[d[1][i]];
-            JZZ.removeMidiIn(url + ' - ' + d[1][i]);
+          for (i = 0; i < outputs.length; i++) {
+            outs[outputs[i]].disconnect();
+            JZZ.removeMidiOut(url + ' - ' + outputs[i]);
           }
-          d = _diff(x.info.outputs, outputs);
-          for (i = 0; i < d[0].length; i++) {
-            w = new JZZ.Widget({ _receive: _onmsg(ws, d[0][i]) });
-            outs[d[0][i]] = w;
-            JZZ.addMidiOut(url + ' - ' + d[0][i], w);
+          ins = {}; outs = {};
+          inputs = []; outputs = [];
+          if (!dead) setTimeout(reconnect, 1000);
+        };
+        ws.onmessage = function(evt) {
+          error = false;
+          try {
+            var x = JSON.parse(evt.data);
+            if (x.info) {
+              var i, d, w;
+              d = _diff(x.info.inputs, inputs);
+              for (i = 0; i < d[0].length; i++) {
+                w = new JZZ.Widget();
+                ins[d[0][i]] = w;
+                JZZ.addMidiIn(url + ' - ' + d[0][i], w);
+              }
+              for (i = 0; i < d[1].length; i++) {
+                ins[d[1][i]].disconnect();
+                delete ins[d[1][i]];
+                JZZ.removeMidiIn(url + ' - ' + d[1][i]);
+              }
+              d = _diff(x.info.outputs, outputs);
+              for (i = 0; i < d[0].length; i++) {
+                w = new JZZ.Widget({ _receive: _onmsg(ws, d[0][i]) });
+                outs[d[0][i]] = w;
+                JZZ.addMidiOut(url + ' - ' + d[0][i], w);
+              }
+              for (i = 0; i < d[1].length; i++) {
+                outs[d[1][i]].disconnect();
+                delete outs[d[1][i]];
+                JZZ.removeMidiOut(url + ' - ' + d[1][i]);
+              }
+              inputs = x.info.inputs;
+              outputs = x.info.outputs;
+              if (start) {
+                start = false;
+                self._resume();
+              }
+            }
+            else if (x.midi) {
+              if (ins[x.id]) ins[x.id].send(_decode(x.midi));
+            }
           }
-          for (i = 0; i < d[1].length; i++) {
-            outs[d[1][i]].disconnect();
-            delete outs[d[1][i]];
-            JZZ.removeMidiOut(url + ' - ' + d[1][i]);
+          catch(e) {
+            console.error(e.message);
           }
-          inputs = x.info.inputs;
-          outputs = x.info.outputs;
-        }
-        else if (x.midi) {
-          if (ins[x.id]) ins[x.id].send(_decode(x.midi));
-        }
+        };
       }
-      catch(e) {
+      catch (e) {
         console.error(e.message);
+        self._crash();
       }
     };
+    reconnect();
+    return self;
   }
 
   function Server(wss) {
@@ -180,7 +199,7 @@
   }
 
   JZZ.WS = {
-    connect: function(url) { return new Client(url); },
+    connect: connect,
     decode: _decode,
     encode: _encode,
     Server: Server
