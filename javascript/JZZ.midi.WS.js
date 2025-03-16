@@ -18,6 +18,7 @@
 
   function connect(url, timeout) {
     var self = new JZZ.lib.R();
+    var ws;
     var ins = {};
     var outs = {};
     var inputs = [];
@@ -26,10 +27,14 @@
     var dead = false;
     var error = false;
     timeout = timeout == parseInt(timeout) && timeout > 0 ? timeout : 5000;
-    setTimeout(function() { if (start) { self._crash(); dead = true; } }, timeout);
+    timeout = setTimeout(function() { if (start) { self._crash(); dead = true; } }, timeout);
+    self._close = function() {
+      dead = true;
+      if (ws) ws.close();
+    };
     var reconnect = function() {
       try {
-        var ws = new _WS(url);
+        ws = new _WS(url);
         ws.onerror = function(e) {
           if (!error) console.error(e);
           error = true;
@@ -49,6 +54,10 @@
           if (!dead) setTimeout(reconnect, 1000);
         };
         ws.onmessage = function(evt) {
+          if (timeout) {
+            clearTimeout(timeout);
+            timeout = undefined;
+          }
           error = false;
           try {
             var x = JSON.parse(evt.data);
