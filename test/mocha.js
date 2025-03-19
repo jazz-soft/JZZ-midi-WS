@@ -19,6 +19,7 @@ function WS(url) {  // client
     },
     send: function(data) { self.onmessage({ data: data }); }
   };
+  this.send = function(data) { refl.onmessage(data); }
   if (Net[url]) {
     schedule(function() { Net[url].client(refl); });
   }
@@ -52,5 +53,30 @@ describe('WebSocket', function() {
     var server = new JZZ.WS.Server(wss);
     wss.connect();
     JZZ.WS.connect(url).and(done).or('Cannot connect');
+  });
+  it('send midi', function(done) {
+    var url = 'ws://send_midi';
+    var wss = new WSS(url);
+    var server = new JZZ.WS.Server(wss);
+    server.addMidiOut('midi_out', new JZZ.Widget({
+      _receive: function(msg) { done(); }
+    }));
+    wss.connect();
+    JZZ.WS.connect(url).and(function() {
+      JZZ({ engine: 'none' }).openMidiOut('ws://send_midi - midi_out').noteOn(0, 'C5');
+    }).or('Cannot connect');
+  });
+  it('receive midi', function(done) {
+    var url = 'ws://receive_midi';
+    var wss = new WSS(url);
+    var server = new JZZ.WS.Server(wss);
+    var server_midi_in = new JZZ.Widget();
+    server.addMidiIn('midi_in', server_midi_in);
+    wss.connect();
+    JZZ.WS.connect(url).and(function() {
+      var port = JZZ({ engine: 'none' }).openMidiIn('ws://receive_midi - midi_in');
+      port.connect(function(msg) { done(); });
+      server_midi_in.noteOn(0, 'C6');
+    }).or('Cannot connect');
   });
 });
