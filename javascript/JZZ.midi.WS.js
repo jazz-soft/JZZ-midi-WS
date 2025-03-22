@@ -30,6 +30,7 @@
     timeout = setTimeout(function() { if (start) { self._crash(); dead = true; } }, timeout);
     self._close = function() {
       dead = true;
+      JZZ.lib.unplug(self);
       if (ws) ws.close();
     };
     var reconnect = function() {
@@ -55,6 +56,7 @@
         };
         ws.onmessage = function(evt) {
           if (timeout) {
+            JZZ.lib.plug(self);
             clearTimeout(timeout);
             timeout = undefined;
           }
