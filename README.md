@@ -64,11 +64,11 @@ function good() { console.log('Connected!'); }
 function bad() { console.log('Cannot connect!'); }
 var url = 'ws://localhost:8888';
 var connection;
-// method 1:
+// method 1 (and/or):
 connection = JZZ.WS.connect(url).and(good).or(bad);
-// method 2:
+// method 2 (then):
 connection = JZZ.WS.connect(url).then(good, bad);
-// method 3:
+// method 3 (within an async function):
 connection = await JZZ.WS.connect(url);
 ```
 
@@ -97,6 +97,24 @@ server.addMidiIn('Dummy', JZZ.Widget());
 server.addMidiOut('Debug', JZZ.Widget({ _receive: function(msg) { console.log(msg.toString()); }}));
 ```
 A more advanced example is available at https://github.com/jazz-soft/WS-MIDI-Server ...
+
+### Server API
+```js
+var server = new JZZ.WS.Server(wss);
+```
+Constructor. `wss` - websocket server.
+
+```js
+server.addMidiIn(name, port);
+server.addMidiOut(name, port);
+```
+Add MIDI port. `name` - name to bee seen by the client; `port` - MIDI port (real or virtual).
+
+```js
+server.removeMidiIn(name);
+server.removeMidiOut(name);
+```
+Remove MIDI port.
 
 ## See also
 [JZZ](https://github.com/jazz-soft/JZZ) - MIDI library for Node.js and web-browsers
