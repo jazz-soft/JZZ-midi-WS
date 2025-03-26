@@ -44,6 +44,34 @@ port.noteOn(0, 'C5', 127);
 ```
 See another example at https://github.com/jazz-soft/JZZ-midi-WS/blob/main/test.html ...
 
+### Client API
+```js
+var connection = JZZ.WS.connect(url, timeout);
+```
+Constructor. `url` - websocket address/port;
+`timeout` (optional) - time in `ms` before fail if the connection cannot be established; default: `5000`.  
+Upon successful connection, remote MIDI ports are added and tracked automatically.  
+If the connection is lost, client tries to reconnect.
+
+```js
+connection.close();
+```
+Disconnect and close all related MIDI ports.
+
+### Asynchronous calls
+```js
+function good() { console.log('Connected!'); }
+function bad() { console.log('Cannot connect!'); }
+var url = 'ws://localhost:8888';
+var connection;
+// method 1:
+connection = JZZ.WS.connect(url).and(good).or(bad);
+// method 2:
+connection = JZZ.WS.connect(url).then(good, bad);
+// method 3:
+connection = await JZZ.WS.connect(url);
+```
+
 ## Server
 ##### (Node.js only)
 ```js
@@ -69,3 +97,6 @@ server.addMidiIn('Dummy', JZZ.Widget());
 server.addMidiOut('Debug', JZZ.Widget({ _receive: function(msg) { console.log(msg.toString()); }}));
 ```
 A more advanced example is available at https://github.com/jazz-soft/WS-MIDI-Server ...
+
+## See also
+[JZZ](https://github.com/jazz-soft/JZZ) - MIDI library for Node.js and web-browsers
