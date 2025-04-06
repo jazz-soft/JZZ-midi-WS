@@ -117,4 +117,5 @@ server.removeMidiOut(name);
 Remove MIDI port.
 
 ## See also
-[JZZ](https://github.com/jazz-soft/JZZ) - MIDI library for Node.js and web-browsers
+- [WS Client](https://jazz-soft.github.io/JZZ-midi-WS) - a live demo at github.io
+- [JZZ](https://github.com/jazz-soft/JZZ) - MIDI library for Node.js and web-browsers

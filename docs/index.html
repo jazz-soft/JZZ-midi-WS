@@ -24,7 +24,14 @@
 </p><p>
 <div id="piano"></div>
 </p><p>
-<a href="https://github.com/jazz-soft/JZZ-midi-WS">https://github.com/jazz-soft/JZZ-midi-WS</a>
+<h2>See also:</h2>
+<ul><li>
+<a href="https://github.com/jazz-soft/JZZ-midi-WS">GitHub repository</a>
+</li><li>
+<a href="https://github.com/jazz-soft/WS-MIDI-Server">WS MIDI Server</a>
+</li><li>
+<a href="https://jazz-soft.net">Jazz-Soft homepage</a>
+</li></ul>
 </p>
 
 <script>
@@ -48,7 +55,7 @@ function connect(url) {
   JZZ.WS.connect(url).and(function() {
     add_connection(url);
   }).or(function() {
-    alert('Cannot connect to the websocket: ' + url + '\nPlease meke sure the server is running...');
+    alert('Cannot connect to the websocket: ' + url + '\nPlease make sure the server is running...');
   });
 }
 function add_connection(url) {
