@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>MIDI via WebSockets</title>
+<script src="https://cdn.jsdelivr.net/npm/jzz"></script>
+<script src="https://cdn.jsdelivr.net/npm/jzz-gui-select"></script>
+<script src="https://cdn.jsdelivr.net/npm/jzz-input-kbd"></script>
+<script src="https://cdn.jsdelivr.net/npm/jzz-synth-tiny"></script>
+<script src="https://cdn.jsdelivr.net/npm/jzz-midi-ws"></script>
+</head>
+<body>
+<h1>MIDI via WebSockets</h1>
+<p>
+<form id="form">
+<label for="combo">Connect:</label>
+<input list="list" id="combo"><datalist id="list"></datalist>
+<input type="submit" value="Go!"></input>
+</form>
+</p><p>
+<label for="select_midi_in">MIDI In:</label>
+<select id="select_midi_in"></select>
+<label for="select_midi_out">MIDI Out:</label>
+<select id="select_midi_out"></select>
+</p><p>
+<div id="piano"></div>
+</p><p>
+<a href="https://github.com/jazz-soft/JZZ-midi-WS">https://github.com/jazz-soft/JZZ-midi-WS</a>
+</p>
+
+<script>
+JZZ.synth.Tiny.register('Web Audio');
+JZZ({engine:'none'}); // hide local ports
+var midi_in = JZZ.gui.SelectMidiIn({ at: 'select_midi_in' });
+var midi_out = JZZ.gui.SelectMidiOut({ at: 'select_midi_out' });
+var piano = JZZ.input.Kbd({at: "piano"});
+midi_in.connect(piano);
+piano.connect(midi_out);
+var connections = [];
+var cookie = 'connections=';
+var combo = document.getElementById('combo');
+var list = document.getElementById('list');
+read_connections();
+document.getElementById('form').addEventListener('submit', function(evt) {
+  evt.preventDefault();
+  connect(('' + combo.value).trim());
+});
+function connect(url) {
+  JZZ.WS.connect(url).and(function() {
+    add_connection(url);
+  }).or(function() {
+    alert('Cannot connect to the websocket: ' + url + '\nPlease meke sure the server is running...');
+  });
+}
+function add_connection(url) {
+  if (connections[0] == url) return;
+  var conn = [url];
+  for (x of connections) if (x != url) conn.push(x);
+  connections = conn;
+  update_connections();
+}
+function read_connections() {
+  for (var x of document.cookie.split(';')) {
+    if (x.startsWith(cookie)) {
+      try { connections = SON.parse(x.substring(cookie.length)); }
+      catch (e) {/**/}
+      break;
+    }
+  }
+  if (!Array.isArray(connections) || !connections.length) connections = ['ws://localhost:8888'];
+  update_connections();
+}
+function update_connections() {
+  document.cookie = cookie + JSON.stringify(connections) + ';max-age=31536000';
+  list.innerHTML = '';
+  for (var conn of connections) {
+    var opt = document.createElement('option');
+    opt.value = conn;
+    list.appendChild(opt);
+  }
+}
+</script>
+</body>
+</html>
