@@ -114,7 +114,7 @@
 
   function Server(wss) {
     if (!(this instanceof Server)) return new Server(wss);
-    self = this;
+    var self = this;
     this.wss = wss;
     this.cli = [];
     this.ins = {};

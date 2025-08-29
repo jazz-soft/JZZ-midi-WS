@@ -51,7 +51,7 @@ global.WebSocket = WS;
 require('..')(JZZ);
 
 function sleep(t) {
-  return new Promise(function(res, rej) { setTimeout(res, t); });
+  return new Promise(function(res) { setTimeout(res, t); });
 }
 
 describe('WebSocket', function() {
@@ -64,7 +64,6 @@ describe('WebSocket', function() {
   it('connected', function(done) {
     var url = 'ws://connected'; // by the test name
     var wss = new WSS(url);
-    var server = new JZZ.WS.Server(wss);
     wss.connect();
     JZZ.WS.connect(url).and(done).or('Cannot connect');
   });
@@ -73,7 +72,7 @@ describe('WebSocket', function() {
     var wss = new WSS(url);
     var server = new JZZ.WS.Server(wss);
     server.addMidiOut('midi_out', new JZZ.Widget({
-      _receive: function(msg) { done(); }
+      _receive: function() { done(); }
     }));
     wss.connect();
     JZZ.WS.connect(url).and(function() {
@@ -89,7 +88,7 @@ describe('WebSocket', function() {
     wss.connect();
     var client = JZZ.WS.connect(url).and(function() {
       var port = JZZ({ engine: 'none' }).openMidiIn('ws://receive_midi - midi_in');
-      port.connect(function(msg) { client.close(); done(); });
+      port.connect(function() { client.close(); done(); });
       server_midi_in.noteOn(0, 'C6');
     }).or('Cannot connect');
   });
