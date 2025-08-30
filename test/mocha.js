@@ -64,6 +64,8 @@ describe('WebSocket', function() {
   it('connected', function(done) {
     var url = 'ws://connected'; // by the test name
     var wss = new WSS(url);
+    /* eslint-disable no-unused-vars */
+    var server = new JZZ.WS.Server(wss);
     wss.connect();
     JZZ.WS.connect(url).and(done).or('Cannot connect');
   });
