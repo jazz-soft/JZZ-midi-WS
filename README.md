@@ -1,11 +1,17 @@
 # JZZ-midi-WS
 ## MIDI via WebSockets for browser and Node.js
-and, YES, it's visible from the Web MIDI API!
 
 [![npm](https://img.shields.io/npm/v/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
 [![npm](https://img.shields.io/npm/dt/jzz-midi-ws.svg)](https://www.npmjs.com/package/jzz-midi-ws)
 [![build](https://github.com/jazz-soft/JZZ-midi-WS/actions/workflows/build.yml/badge.svg)](https://github.com/jazz-soft/JZZ-midi-WS/actions)
 [![Coverage Status](https://coveralls.io/repos/github/jazz-soft/JZZ-midi-WS/badge.svg)](https://coveralls.io/github/jazz-soft/JZZ-midi-WS)
+
+This module allows you to set up a server that exposes MIDI ports via the network,  
+and multiple clients that can access these ports via WebSockets.  
+And YES, these ports are visible from the Web MIDI API!
+
+If you need a symmetric peer-to-peer connection where both sides can access each other's MIDI ports,  
+you may want to check https://github.com/jazz-soft/JZZ-midi-RTC
 
 ## Usage
 ##### Plain HTML
@@ -118,4 +124,5 @@ Remove MIDI port.
 
 ## See also
 - [WS Client](https://jazz-soft.github.io/JZZ-midi-WS) - a live demo at github.io
+- [JZZ-midi-RTC](https://github.com/jazz-soft/JZZ-midi-RTC) - MIDI via WebRTC
 - [JZZ](https://github.com/jazz-soft/JZZ) - MIDI library for Node.js and web-browsers
