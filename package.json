@@ -1,6 +1,6 @@
 {
   "name": "jzz-midi-ws",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MIDI via WebSockets",
   "main": "javascript/JZZ.midi.WS.js",
   "scripts": {
@@ -15,18 +15,18 @@
   ],
   "author": "jazz-soft (https://jazz-soft.net/)",
   "dependencies": {
-    "jzz": "^1.9.3",
+    "jzz": "^1.9.5",
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "eslint": "^9.34.0",
+    "eslint": "^9.35.0",
     "grunt": "^1.6.1",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-uglify": "^5.2.2",
     "jzz-gui-select": "^1.1.7",
     "jzz-input-kbd": "^1.3.4",
     "jzz-synth-tiny": "^1.4.3",
-    "mocha": "^11.7.1",
+    "mocha": "^11.7.2",
     "nyc": "^17.1.0"
   },
   "repository": {
